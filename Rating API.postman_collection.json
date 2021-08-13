@@ -1,0 +1,198 @@
+{
+	"info": {
+		"_postman_id": "a5e621ef-fc8d-4588-a478-d2a71a72c1a8",
+		"name": "Rating API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "System",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost/health",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"health"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userId\": \"cf75a15f-0c96-4e6a-ae67-d1624c02557d\",\n    \"firstname\": \"John\",\n    \"lastname\": \"Due\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost/registers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"registers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Information",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost/registers/:userId",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"registers",
+						":userId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "a86ed2cf-7ca3-4a26-9363-3209a96e9068"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Rate User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"userId\": \"cf75a15f-0c96-4e6a-ae67-d1624c02557d\",\n    \"score\": 5\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost/ratings",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"ratings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Rating",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost/users/ratings/:userId",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"users",
+						"ratings",
+						":userId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "a86ed2cf-7ca3-4a26-9363-3209a96e9068"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Rating Leaderboards",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost/users/ratings?max=10",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"users",
+						"ratings"
+					],
+					"query": [
+						{
+							"key": "max",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

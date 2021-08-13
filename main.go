@@ -117,11 +117,11 @@ func MonthRatingSummary() string {
 	return monthAndYear
 }
 
-func leaderBoardUserRatingAccumulateMonthKey() string {
+func userRatingAccumulateLeaderboardMonthKey() string {
 	return fmt.Sprintf("leaderboard.user.rating.accumulate:%s", MonthRatingSummary())
 }
 
-func leaderBoardUserRatingMonthKey() string {
+func userRatingLeaderboardMonthKey() string {
 	return fmt.Sprintf("leaderboard.user.rating:%s", MonthRatingSummary())
 }
 
@@ -156,7 +156,7 @@ func (service *Service) RateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ratingScoreMonthKey := leaderBoardUserRatingAccumulateMonthKey()
+	ratingScoreMonthKey := userRatingAccumulateLeaderboardMonthKey()
 	score := rating.Score
 	member := rating.UserId
 
@@ -171,10 +171,10 @@ func (service *Service) RateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	leaderBoardUserRatingMonthKey := leaderBoardUserRatingMonthKey()
+	userRatingLeaderboardMonthKey := userRatingLeaderboardMonthKey()
 	avgScore := totalScore / float64(totalRated)
 
-	_, err = service.redis.setSortKey(leaderBoardUserRatingMonthKey, avgScore, member)
+	_, err = service.redis.setSortKey(userRatingLeaderboardMonthKey, avgScore, member)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 
@@ -199,7 +199,7 @@ func (service *Service) GetUserRatingById(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	key := leaderBoardUserRatingMonthKey()
+	key := userRatingLeaderboardMonthKey()
 	score, err := service.redis.getSortScore(key, userId)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -215,12 +215,12 @@ func (service *Service) GetUserRatingById(w http.ResponseWriter, r *http.Request
 	json.NewEncoder(w).Encode(userScoreResponse)
 }
 
-type LeaderBoardUserRatingResponse struct {
+type UserRatingLeaderboardResponse struct {
 	UserId string  `json:"userId"`
 	Score  float64 `json:"score"`
 }
 
-func (service *Service) LeaderBoardUserRating(w http.ResponseWriter, r *http.Request) {
+func (service *Service) UserRatingLeaderboard(w http.ResponseWriter, r *http.Request) {
 	max := r.URL.Query().Get("max")
 
 	var maxNumber int64
@@ -239,7 +239,7 @@ func (service *Service) LeaderBoardUserRating(w http.ResponseWriter, r *http.Req
 		}
 	}
 
-	key := leaderBoardUserRatingMonthKey()
+	key := userRatingLeaderboardMonthKey()
 	ranks, err := service.redis.getRank(key, maxNumber)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -250,9 +250,9 @@ func (service *Service) LeaderBoardUserRating(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	leaderBoard := []LeaderBoardUserRatingResponse{}
+	leaderBoard := []UserRatingLeaderboardResponse{}
 	for _, rank := range ranks {
-		rankModel := LeaderBoardUserRatingResponse{
+		rankModel := UserRatingLeaderboardResponse{
 			UserId: rank.Member,
 			Score:  rank.Score,
 		}
@@ -318,7 +318,7 @@ func main() {
 	router.HandleFunc("/ratings", service.RateUser).Methods("POST")
 
 	router.HandleFunc("/users/ratings/{userId}", service.GetUserRatingById).Methods("GET")
-	router.HandleFunc("/users/ratings", service.LeaderBoardUserRating).Methods("GET")
+	router.HandleFunc("/users/ratings", service.UserRatingLeaderboard).Methods("GET")
 
 	serverPort := GetEnv("SERVER_PORT", ":80")
 	srv := &http.Server{
