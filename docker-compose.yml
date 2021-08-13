@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  # App Service
+  app:
+    # Configuration for building the docker image for the service
+    build:
+      context: . # Use an image built from the specified dockerfile in the current directory.
+      dockerfile: Dockerfile
+    ports:
+      - "80:80" # Forward the exposed port 80 on the container to port 80 on the host machine
+    restart: unless-stopped
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks: # Networks to join (Services on the same network can communicate with each other using their name)
+      - backend
+
+  # Redis Service   
+  redis:
+    image: "redis:6.2.5-alpine" # Use a public Redis image to build the redis service    
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    networks:
+      - backend
+
+# Networks to be created to facilitate communication between containers
+networks:
+  backend:
