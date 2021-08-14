@@ -158,7 +158,7 @@
 			"response": []
 		},
 		{
-			"name": "User Rating Leader Board",
+			"name": "User Rating Leaderboards",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},

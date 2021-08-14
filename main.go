@@ -186,8 +186,6 @@ func (service *Service) RateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusAccepted)
-	userScoreResponse := RateUserResponse{Score: avgScore}
-	json.NewEncoder(w).Encode(userScoreResponse)
 }
 
 func (service *Service) GetUserRatingById(w http.ResponseWriter, r *http.Request) {
