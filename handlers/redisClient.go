@@ -1,13 +1,15 @@
-package main
+package handlers
 
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 
 	"log"
 
 	"github.com/go-redis/redis"
+	"github.com/nattatorn-dev/rating-api/utils"
 )
 
 var (
@@ -15,7 +17,7 @@ var (
 )
 
 type redisClient struct {
-	c *redis.Client
+	c *redis.ClusterClient
 }
 
 func handleOnConnect(conn *redis.Conn) error {
@@ -29,12 +31,14 @@ func handleOnConnect(conn *redis.Conn) error {
 }
 
 func initialize() *redisClient {
-	redisUrl := GetEnv("REDIS_URL", "localhost:6379")
+	redisUrl := utils.GetEnv("REDIS_URI", "localhost:6379")
+	redisUrlArr := strings.Split(redisUrl, ",")
 
-	c := redis.NewClient(&redis.Options{
-		Addr:       redisUrl,
-		MaxRetries: 1,
-		OnConnect:  handleOnConnect,
+	c := redis.NewClusterClient(&redis.ClusterOptions{
+		Addrs:          redisUrlArr,
+		MaxRetries:     1,
+		OnConnect:      handleOnConnect,
+		RouteByLatency: true,
 	})
 
 	if err := c.Ping().Err(); err != nil {

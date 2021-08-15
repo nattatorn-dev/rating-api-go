@@ -7,19 +7,29 @@ services:
     build:
       context: . # Use an image built from the specified dockerfile in the current directory.
       dockerfile: Dockerfile
+    depends_on:
+      - redis-node-0
+      - redis-node-1
+      - redis-node-2
+      - redis-node-3
+      - redis-node-4
+      - redis-node-5
+    environment: 
+      - SERVER_PORT=80
+      - REDIS_URI=redis-node-0:6379,redis-node-1:6379,redis-node-2:6379,redis-node-3:6379,redis-node-4:6379,redis-node-5:6379
     ports:
       - "80:80" # Forward the exposed port 80 on the container to port 80 on the host machine
     restart: unless-stopped
-    depends_on:
-      redis:
-        condition: service_healthy
     networks: # Networks to join (Services on the same network can communicate with each other using their name)
       - backend
 
-  # Redis Service   
-  redis:
-    image: "redis:6.2.5-alpine" # Use a public Redis image to build the redis service    
-    restart: unless-stopped
+  redis-node-0:
+    image: docker.io/bitnami/redis-cluster:6.2
+    volumes:
+      - redis-cluster_data-0:/bitnami/redis/data
+    environment:
+      - 'REDIS_NODES=redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5'
+      - 'ALLOW_EMPTY_PASSWORD=true'
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 1s
@@ -27,6 +37,103 @@ services:
       retries: 30
     networks:
       - backend
+
+  redis-node-1:
+    image: docker.io/bitnami/redis-cluster:6.2
+    volumes:
+      - redis-cluster_data-1:/bitnami/redis/data
+    environment:
+      - 'REDIS_NODES=redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5'
+      - 'ALLOW_EMPTY_PASSWORD=true'
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    networks:
+      - backend
+
+  redis-node-2:
+    image: docker.io/bitnami/redis-cluster:6.2
+    volumes:
+      - redis-cluster_data-2:/bitnami/redis/data
+    environment:
+      - 'REDIS_NODES=redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5'
+      - 'ALLOW_EMPTY_PASSWORD=true'
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    networks:
+      - backend
+
+  redis-node-3:
+    image: docker.io/bitnami/redis-cluster:6.2
+    volumes:
+      - redis-cluster_data-3:/bitnami/redis/data
+    environment:
+      - 'REDIS_NODES=redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5'
+      - 'ALLOW_EMPTY_PASSWORD=true'
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    networks:
+      - backend
+
+  redis-node-4:
+    image: docker.io/bitnami/redis-cluster:6.2
+    volumes:
+      - redis-cluster_data-4:/bitnami/redis/data
+    environment:
+      - 'REDIS_NODES=redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5'
+      - 'ALLOW_EMPTY_PASSWORD=true'
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    networks:
+      - backend
+
+  redis-node-5:
+    image: docker.io/bitnami/redis-cluster:6.2
+    volumes:
+      - redis-cluster_data-5:/bitnami/redis/data
+    depends_on:
+      - redis-node-0
+      - redis-node-1
+      - redis-node-2
+      - redis-node-3
+      - redis-node-4
+    environment:
+      - 'REDIS_CLUSTER_REPLICAS=1'
+      - 'REDIS_NODES=redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5'
+      - 'ALLOW_EMPTY_PASSWORD=true'
+      - 'REDIS_CLUSTER_CREATOR=yes'
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    networks:
+      - backend
+
+volumes:
+  redis-cluster_data-0:
+    driver: local
+  redis-cluster_data-1:
+    driver: local
+  redis-cluster_data-2:
+    driver: local
+  redis-cluster_data-3:
+    driver: local
+  redis-cluster_data-4:
+    driver: local
+  redis-cluster_data-5:
+    driver: local
 
 # Networks to be created to facilitate communication between containers
 networks:

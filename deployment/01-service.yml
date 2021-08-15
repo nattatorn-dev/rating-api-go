@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: rating-api
+spec:
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+    protocol: TCP
+  selector:
+    app: rating-api

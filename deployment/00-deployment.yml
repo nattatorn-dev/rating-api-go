@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: rating-api
+  name: rating-api
+  namespace: default
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 50%
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: rating-api
+  template:
+    metadata:
+      labels:
+        app: rating-api
+    spec:
+      containers:
+        - image: nattatorn/rating-api-go:1.1-cluster
+          name: rating-api
+          env:
+            - name: SERVER_PORT
+              value: "80"
+            - name: REDIS_URI
+              valueFrom:
+                secretKeyRef:
+                  name: redis-cluster
+                  key: REDIS_URI
+          readinessProbe:
+            failureThreshold: 1
+            httpGet:
+              path: /system/readyz
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 1
+            periodSeconds: 1
+          livenessProbe:
+            httpGet:
+              path: /system/healthz
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 1
+            periodSeconds: 1
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"

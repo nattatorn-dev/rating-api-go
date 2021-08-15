@@ -52,7 +52,6 @@ COPY --from=builder /etc/group /etc/group
 
 # Copy our static executable
 COPY --from=builder /go/bin/app /go/bin/app
-COPY .env .
 # Use an unprivileged user.
 USER appuser:appuser
 

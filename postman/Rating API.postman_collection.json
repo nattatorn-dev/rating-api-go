@@ -9,18 +9,38 @@
 			"name": "System",
 			"item": [
 				{
-					"name": "Health Check",
+					"name": "Health",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost/health",
+							"raw": "http://localhost/system/healthz",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"path": [
-								"health"
+								"system",
+								"healthz"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ready",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost/system/readyz",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"system",
+								"readyz"
 							]
 						}
 					},
@@ -85,7 +105,7 @@
 					"variable": [
 						{
 							"key": "userId",
-							"value": "a86ed2cf-7ca3-4a26-9363-3209a96e9068"
+							"value": "cf75a15f-0c96-4e6a-ae67-d1624c02557d"
 						}
 					]
 				}
@@ -99,7 +119,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"userId\": \"cf75a15f-0c96-4e6a-ae67-d1624c02557d\",\n    \"score\": 5\n}",
+					"raw": "{\n    \"userId\": \"cf75a15f-0c96-4e6a-ae67-d1624c02557d\",\n    \"score\": 1\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -150,7 +170,7 @@
 					"variable": [
 						{
 							"key": "userId",
-							"value": "a86ed2cf-7ca3-4a26-9363-3209a96e9068"
+							"value": ""
 						}
 					]
 				}
